@@ -10,6 +10,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
+#Importando Calendario
+from tkcalendar import Calendar, DateEntry
+from datetime import date
+
 # import customtkinter as ctk
 # import ttkbootstrap as ttk
 # from ttkbootstrap.constants import *
@@ -35,7 +39,7 @@ colors = ['#5588bb', '#66bbbb','#99bb55', '#ee9944', '#444466', '#bb5555']
 
 # janela = ctk.CTk()
 janela = Tk()
-janela.title()
+janela.title('Controle Financeiro')
 janela.geometry('900x650')
 janela.configure(background=co9)
 janela.resizable(width=FALSE, height=FALSE)
@@ -186,5 +190,108 @@ porcentagem()
 grafico_bar()
 resumo()
 grafico_pie()
+
+
+
+# Criando Frame Baixo
+frame_renda = Frame(FrameBaixo, width=300, height=250, bg=co1)
+frame_renda.grid(row=0, column=0)
+
+frame_operacoes = Frame(FrameBaixo, width=220, height=250, bg=co1)
+frame_operacoes.grid(row=0, column=1, padx=5)
+
+frame_configuracao = Frame(FrameBaixo, width=220, height=250, bg=co1)
+frame_configuracao.grid(row=0, column=2, padx=5)
+
+
+# Tabela renda mensal --------------------------------------------------
+app_tabela = Label(FrameMeio, text="Tabela, Receitas e Despesas", anchor=NW, font=('Verdana 12'), bg=co1, fg=co4)
+app_tabela.place(x=5, y=309)
+
+
+# Função para mostrar Renda
+def mostrar_renda():
+    #creating a treeview with dual scrollbars
+    tabela_head = ['#Id','Categoria','Data','Valor']
+
+    lista_itens = [[0,2,3,4],[0,2,3,4],[0,2,3,4],[0,2,3,4]]
+    
+    global tree
+
+    tree = ttk.Treeview(frame_renda, selectmode="extended",columns=tabela_head, show="headings")
+    #vertical scrollbar
+    vsb = ttk.Scrollbar(frame_renda, orient="vertical", command=tree.yview)
+    #horizontal scrollbar
+    hsb = ttk.Scrollbar(frame_renda, orient="horizontal", command=tree.xview)
+
+    tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+
+    tree.grid(column=0, row=0, sticky='nsew')
+    vsb.grid(column=1, row=0, sticky='ns')
+    hsb.grid(column=0, row=1, sticky='ew')
+
+    hd=["center","center","center", "center"]
+    h=[30,100,100,100]
+    n=0
+
+    for col in tabela_head:
+        tree.heading(col, text=col.title(), anchor=CENTER)
+        #adjust the column's width to the header string
+        tree.column(col, width=h[n],anchor=hd[n])
+        
+        n+=1
+
+    for item in lista_itens:
+        tree.insert('', 'end', values=item)
+
+mostrar_renda()
+
+
+# Configuração Despesas ----------------------------------------
+l_info = Label(frame_operacoes, text="Insira novas despesas", height=1, anchor=NW, font=('Verdana 10 bold'), bg=co1, fg=co4)
+l_info.place(x=10, y=10)
+
+# Categoria ----------------------------------------------------
+l_categoria = Label(frame_operacoes, text='Categoria', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_categoria.place(x=10, y=40)
+
+# Pegando Categoria --------------------------------------------
+categoria_funcao = ['Viagem', 'Comida']
+categoria = []
+
+for i in categoria_funcao:
+    categoria.append(i[1])
+
+combo_categoria_despesas = ttk.Combobox(frame_operacoes, width=10, font=('Ivy 10'))
+combo_categoria_despesas['values'] = (categoria)
+combo_categoria_despesas.place(x=110, y=41)
+
+# Despesas -----------------------------------------------------
+l_cal_despesas = Label(frame_operacoes, text='Data', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_cal_despesas.place(x=10, y=70)
+e_cal_despesas = DateEntry(frame_operacoes, width=12, background='darkblue', foreground='white', borderwidth=2, year=2024)
+e_cal_despesas.place(x=110, y=71)
+
+# Valor ---------------------------------------------------------
+l_valor_despesas = Label(frame_operacoes, text='Valor Total', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_valor_despesas.place(x=10, y=100)
+e_valor_despesas = Entry(frame_operacoes, width=14, justify='left', relief='solid')
+e_valor_despesas.place(x=110, y=101)
+
+# Botão Inserir --------------------------------------------------
+img_add_despesas = Image.open('add.png')
+img_add_despesas = img_add_despesas.resize((17,17))
+img_add_despesas = ImageTk.PhotoImage(img_add_despesas)
+
+botao_inserir_despesas = Button(frame_operacoes, image=img_add_despesas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botao_inserir_despesas.place(x=110, y=131)
+
+
+
+
+
+
+
+
 
 janela.mainloop()

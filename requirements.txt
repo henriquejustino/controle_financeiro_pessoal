@@ -1,1 +1,2 @@
 pillow==10.1.0
+tkcalendar==1.6.1
